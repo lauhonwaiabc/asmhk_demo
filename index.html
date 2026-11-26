@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{event.shortName}} — Annual Scientific Meeting in Anaesthesiology</title>
+<meta name="description" content="{{event.shortName}}: an international congress on {{event.theme}}. {{event.dateLabel}}, {{venue.short}}.">
+<meta name="theme-color" content="#446da8">
+<meta property="og:title" content="{{event.shortName}} — Annual Scientific Meeting in Anaesthesiology">
+<meta property="og:description" content="{{event.shortName}}: an international congress on {{event.theme}}. {{event.dateLabel}}, {{venue.short}}.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://asmhk.org/assets/images/og-asm2027.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/images/favicon.svg?v=pseudo-20261126120000" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.ico?v=pseudo-20261126120000" sizes="any">
+<link rel="icon" href="assets/icons/favicon-32.png?v=pseudo-20261126120000" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/icons/favicon-16.png?v=pseudo-20261126120000" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=pseudo-20261126120000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Euphoria+Script&family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/images/banner-hk.jpg" fetchpriority="high">
+<link rel="stylesheet" href="assets/css/style.css?v=pseudo-20261126120000">
+<link rel="stylesheet" href="assets/css/motion.css?v=pseudo-20261126120000">
+<script>document.documentElement.classList.add("motion");</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{event.name}}",
+  "description": "{{event.shortName}}: an international congress on {{event.theme}}. {{event.dateLabel}}, {{venue.short}}.",
+  "startDate": "{{event.startISO}}",
+  "endDate": "{{event.endISO}}",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "location": {
+    "@type": "Place",
+    "name": "{{venue.name}}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{venue.street}}",
+      "addressLocality": "{{event.city}}",
+      "addressCountry": "HK"
+    }
+  },
+  "image": [
+    "https://asmhk.org/assets/images/og-asm2027.jpg"
+  ],
+  "url": "{{event.website}}",
+  "organizer": [
+    {
+      "@type": "Organization",
+      "name": "{{event.organisers.0.name}}",
+      "url": "{{event.organisers.0.url}}"
+    },
+    {
+      "@type": "Organization",
+      "name": "{{event.organisers.1.name}}",
+      "url": "{{event.organisers.1.url}}"
+    }
+  ]
+}
+</script>
+  <link rel="canonical" href="https://asmhk.org/">
+  <link rel="stylesheet" href="assets/css/site.css?v=pseudo-20261126120000">
+</head>
+<body data-page="home">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="ASM 2027 home">
+      <img class="brand-mark" src="assets/images/asm2027-logo.png?v=pseudo-20261126120000" alt="" width="44" height="44">
+      <span class="brand-text">{{event.shortName}}<small>{{event.city}}</small></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="siteNav" aria-expanded="false">
+      <span></span>
+    </button>
+    <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html" data-nav="home">Home</a></li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="aboutMenu">About <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="aboutMenu">
+            <li><a href="index.html#welcome">Welcome</a></li>
+            <li><a href="pages/event.html">Event</a></li>
+            <li><a href="pages/committees.html">Committees</a></li>
+            <li><a href="pages/meeting-information.html">Venue</a></li>
+            <li><a href="pages/travel-visa.html">Travel, visa &amp; letters</a></li>
+            <li><a href="pages/accommodation.html">Accommodation</a></li>
+            <li><a href="pages/accessibility.html">Accessibility</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="programmeMenu">Programme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="programmeMenu">
+            <li><a href="pages/programme.html">Programme</a></li>
+            <li><a href="pages/faculty.html">Faculty</a></li>
+            <li><a href="pages/e-posters.html">Free Paper &amp; e-Poster</a></li>
+            <li><a href="pages/formal-project-prize.html">Formal Project Prize Session</a></li>
+            <li><a href="pages/cpd.html">CME/CPD</a></li>
+            <li><a href="pages/ondemand.html">OnDemand</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="participateMenu">Participate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="participateMenu">
+            <li><a href="pages/registration.html">Registration</a></li>
+            <li><a href="pages/call-for-eposter.html">Call for Free Paper &amp; e-Poster</a></li>
+            <li><a href="pages/call-for-formal-project.html">Formal Project Prize</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="engageMenu">Engagement <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="engageMenu">
+            <li><a href="pages/social-functions.html">Social functions</a></li>
+            <li><a href="pages/college-ceremony.html">HKCA Congregation Ceremony</a></li>
+            <li><a href="pages/explore-hong-kong.html">Explore Hong Kong</a></li>
+            <li><a href="pages/news.html">News</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="sponsorshipMenu">Sponsorship <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="sponsorshipMenu">
+            <li><a href="pages/our-sponsors.html">Our sponsors</a></li>
+            <li><a href="pages/sponsorship-exhibition.html">Packages</a></li>
+            <li><a href="pages/sponsor-application.html">Apply</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="helpMenu">Help <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="helpMenu">
+            <li><a href="pages/faqs.html">FAQ</a></li>
+            <li><a href="pages/search.html">Search</a></li>
+            <li><a href="pages/contact-us.html">Contact</a></li>
+            <li><a href="pages/privacy.html">Privacy</a></li>
+            <li><a href="pages/terms.html">Terms</a></li>
+            <li><a href="pages/past-asm.html">Past ASM</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="banner" aria-label="{{event.name}}">
+  <div class="container banner-inner">
+    <div class="banner-copy">
+      <p class="banner-eyebrow">International Congress &middot; Hong Kong 2027</p>
+      <h1 class="banner-title">Annual Scientific<br>Meeting in<br>Anaesthesiology 2027</h1>
+      <div class="banner-meta">
+        <div><span class="tag">Date</span><strong>{{event.dateLabel}}</strong></div>
+        <div><span class="tag">Venue</span><strong>{{venue.short}}</strong></div>
+        <div class="banner-links">
+          <a class="banner-cta" href="pages/registration.html">Register</a>
+          <a class="banner-add" href="pages/programme.html">View programme</a>
+          <a class="banner-add" href="assets/asm2027.ics" download>Add to calendar</a>
+        </div>
+      </div>
+    </div>
+    <div class="banner-theme">
+      <span class="theme-label">Theme</span>
+      <span class="script">Anaesthesia</span><span class="script">Intelligence</span>
+    </div>
+  </div>
+</section>
+
+<section class="counterbar" aria-label="Key deadlines">
+  <div class="container counterbar-inner">
+    <a class="btn5" href="pages/programme.html">E-Programme<span>{{eProgramme.available}}</span></a>
+    <a class="box1" href="pages/call-for-eposter.html">
+      <span>Deadline for Submission</span>
+      <strong class="deadline">{{ePosterFreePaper.abstractDeadline}}</strong>
+    </a>
+    <a class="box1" href="pages/registration.html">
+      <span>Deadline for Early-Bird Registration</span>
+      <strong class="deadline">{{registration.earlyBirdDeadline}}</strong>
+    </a>
+  </div>
+</section>
+
+<section class="countdown-band" aria-label="Countdown to {{event.shortName}}">
+  <div class="container countdown-inner">
+    <div class="countdown-copy">
+      <strong>{{event.shortName}} opens in</strong>
+      <span>{{event.dateLabel}} &middot; {{venue.short}}</span>
+    </div>
+    <div class="countdown" id="countdown" data-countdown="{{event.startISO}}" hidden>
+      <div><strong data-days>0</strong><span>Days</span></div>
+      <div><strong data-hours>00</strong><span>Hours</span></div>
+      <div><strong data-minutes>00</strong><span>Minutes</span></div>
+      <div><strong data-seconds>00</strong><span>Seconds</span></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="welcome" id="welcome">
+  <div class="container">
+    <h2 class="section-title">Welcome Message</h2>
+    <div id="welcomeContent"><p>Dear Colleagues and Friends,</p><p>Welcome to the {{event.name}} — an international congress on {{event.theme}}.</p><p>Intelligence in anaesthesia has never been only artificial. It is the judgement built from training and experience, the situational awareness of a team, and the data that now surrounds every decision. {{event.shortName}} explores where these intelligences meet: what the evidence supports, what changes practice, and what remains a matter of human judgement.</p><p>Across two days we combine plenary sessions with focused symposia, hands-on workshops and the Nursing Symposium, alongside the HKCA Congregation and the Conference / Congregation Dinner. The programme is designed for anaesthesiologists, trainees, nurses and allied health professionals from Hong Kong, the mainland, Asia-Pacific and beyond, and the international programme brings perspectives from across the specialty together in one place.</p><p>We look forward to welcoming you to Hong Kong.</p><div class="signature-row"><div class="signature"><img src="assets/images/president-hkca.jpg" alt=""><div class="signature-copy"><strong>Dr. CHEE Yee Eot</strong><span>President<br>The Hong Kong College of Anaesthesiologists</span></div></div><div class="signature"><img src="assets/images/president-sahk.jpg" alt=""><div class="signature-copy"><strong>Dr. CHAN Chi Wing, Timmy</strong><span>President<br>The Society of Anaesthetists of Hong Kong</span></div></div><div class="signature"><img src="assets/images/chairperson.jpg" alt=""><div class="signature-copy"><strong>Dr. LAU Hon Wai, Max</strong><span>Chairperson, Organising Committee<br>{{event.shortName}}</span></div></div></div></div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <h2 class="section-title">Theme: {{event.theme}}</h2>
+    <p class="theme-quote">{{event.themeTagline}}</p>
+    <p class="theme-intro">{{event.themeIntro}}</p>
+    <div class="grid grid-3">
+      <article class="theme-box">
+        <span class="theme-num">01</span>
+        <h3>Artificial intelligence</h3>
+        <p>Decision support, intelligent monitoring, closed-loop delivery and the evidence that should accompany them.</p>
+      </article>
+      <article class="theme-box">
+        <span class="theme-num">02</span>
+        <h3>Human intelligence</h3>
+        <p>Clinical judgement, human factors, team performance and the education that prepares us for new tools.</p>
+      </article>
+      <article class="theme-box">
+        <span class="theme-num">03</span>
+        <h3>System intelligence</h3>
+        <p>Data, governance, implementation and the design of reliable care across departments and borders.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Why attend</h2>
+    <div class="grid grid-3">
+      <article class="info-card info-card--accent">
+        <h3>Evidence you can use</h3>
+        <p>Plenary lectures and focused symposia separate what is ready for practice from what still needs evidence, with time to test the arguments against your own service.</p>
+      </article>
+      <article class="info-card info-card--accent">
+        <h3>Practical workshops</h3>
+        <p>Small-group, hands-on sessions on airway, regional anaesthesia, POCUS, echocardiography, AI and communication — designed to change what you do on the next list.</p>
+      </article>
+      <article class="info-card info-card--accent">
+        <h3>An international community</h3>
+        <p>Meet anaesthesiologists, trainees, nurses and allied health professionals from Hong Kong, the mainland, Asia-Pacific and beyond, alongside the HKCA Congregation and social programme.</p>
+      </article>
+    </div>
+    <p style="margin-top:18px"><a class="btn btn-primary" href="pages/programme.html">Explore the programme</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="news-head" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <h2 class="section-title" style="text-align:left;margin-bottom:10px">Latest updates</h2>
+      <a href="pages/news.html" style="font-weight:700">All news &rarr;</a>
+    </div>
+    <div class="grid grid-3" data-render="news-home"></div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <h2 class="section-title">Plan your visit</h2>
+    <div class="grid grid-4"><a class="info-card" href="pages/accommodation.html"><h3>Accommodation</h3><p>Hotel partners, rates and booking codes as they are confirmed.</p></a><a class="info-card" href="pages/travel-visa.html"><h3>Travel &amp; visa</h3><p>Airport, MTR, taxi, parking and invitation letters.</p></a><a class="info-card" href="pages/programme.html"><h3>Programme</h3><p>Sessions, workshops and ceremonies across the two days.</p></a><a class="info-card" href="pages/faqs.html"><h3>FAQs</h3><p>Registration, abstracts, CPD, accessibility and sponsorship answers.</p></a></div>
+  </div>
+</section>
+
+
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img class="footer-logo" src="assets/images/logo.png" alt="The Hong Kong College of Anaesthesiologists and The Society of Anaesthetists of Hong Kong">
+        <p class="footer-title">{{event.name}}</p>
+        <p>{{event.dateLabel}}<br>{{venue.short}}</p>
+        <p><a href="pages/contact-us.html">Contact the {{event.shortName}} team</a></p>
+        <p class="footer-hashtag">{{event.hashtag}}</p>
+      </div>
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="pages/programme.html">Programme</a></li>
+          <li><a href="pages/registration.html">Registration</a></li>
+          <li><a href="pages/accommodation.html">Accommodation</a></li>
+          <li><a href="pages/travel-visa.html">Travel &amp; visa</a></li>
+          <li><a href="pages/social-functions.html">Social functions</a></li>
+          <li><a href="pages/explore-hong-kong.html">Explore Hong Kong</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Programme &amp; help</h3>
+        <ul>
+          <li><a href="pages/faculty.html">Faculty</a></li>
+          <li><a href="pages/e-posters.html">Free Paper &amp; e-Poster</a></li>
+          <li><a href="pages/cpd.html">CME/CPD &amp; certificates</a></li>
+          <li><a href="pages/academic-accreditation.html">Academic accreditation</a></li>
+          <li><a href="pages/ondemand.html">OnDemand</a></li>
+          <li><a href="pages/faqs.html">FAQs</a></li>
+          <li><a href="pages/past-asm.html">Past ASM</a></li>
+          <li><a href="pages/search.html">Search</a></li>
+          <li><a href="pages/contact-us.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Sponsorship &amp; about</h3>
+        <ul>
+          <li><a href="pages/our-sponsors.html">Our sponsors</a></li>
+          <li><a href="pages/sponsorship-exhibition.html">Packages</a></li>
+          <li><a href="pages/sponsor-application.html">Apply to exhibit</a></li>
+          <li><a href="pages/privacy.html">Privacy</a></li>
+          <li><a href="pages/terms.html">Terms</a></li>
+          <li><a href="pages/accessibility.html">Accessibility</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright &copy; {{event.year}} &middot; {{event.shortName}} &middot; All Rights Reserved</p>
+      <p class="footer-credit">Banner photo: <a href="https://commons.wikimedia.org/wiki/File:Hong_Kong_Skyline_Panorama_-_Dec_2008.jpg" target="_blank" rel="noopener">David Iliff</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. Official site: asmhk.org</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button>
+<script src="assets/js/data/meta.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/committee.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/people.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/programme.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/abstracts.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/registration.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/sponsors.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/data/contact.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/data/news.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/data/accommodation.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/data/cpd.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/event-facts.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/asm-data.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/asm-render.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/main.js?v=pseudo-20261126120000"></script>
+<script src="assets/js/motion.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/data/pages.js?v=pseudo-20261126120000"></script>
+  <script src="assets/js/site.js?v=pseudo-20261126120000"></script>
+</body>
+</html>

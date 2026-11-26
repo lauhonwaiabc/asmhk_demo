@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /pages/slot-qr.html
+Disallow: /404.html
+
+Sitemap: https://asmhk.org/sitemap.xml

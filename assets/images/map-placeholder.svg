@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Map placeholder — venue to be confirmed">
+  <rect width="800" height="520" fill="#eef6f7"/>
+  <g fill="#e2f0f1">
+    <rect x="40" y="40" width="180" height="120" rx="6"/>
+    <rect x="250" y="30" width="130" height="90" rx="6"/>
+    <rect x="420" y="60" width="200" height="140" rx="6"/>
+    <rect x="650" y="40" width="110" height="100" rx="6"/>
+    <rect x="50" y="210" width="140" height="150" rx="6"/>
+    <rect x="230" y="180" width="160" height="120" rx="6"/>
+    <rect x="430" y="240" width="120" height="110" rx="6"/>
+    <rect x="590" y="230" width="170" height="120" rx="6"/>
+    <rect x="90" y="400" width="200" height="90" rx="6"/>
+    <rect x="330" y="390" width="150" height="100" rx="6"/>
+    <rect x="520" y="390" width="220" height="90" rx="6"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="16" stroke-linecap="round">
+    <path d="M0 190 H 800"/>
+    <path d="M220 0 V 520"/>
+    <path d="M400 0 V 520"/>
+    <path d="M590 0 V 520"/>
+    <path d="M0 370 H 800"/>
+  </g>
+  <g stroke="#cfe3e6" stroke-width="2" stroke-dasharray="8 8">
+    <path d="M0 190 H 800"/>
+    <path d="M400 0 V 520"/>
+  </g>
+  <g stroke="#8fc0c9" stroke-width="4" fill="none" opacity=".7">
+    <path d="M-20 470 C 160 430, 240 500, 400 460 S 650 420, 820 470"/>
+  </g>
+  <g transform="translate(400 250)">
+    <path d="M0-46c-19 0-34 15-34 34 0 25 34 58 34 58s34-33 34-58c0-19-15-34-34-34z" fill="#e05b3f"/>
+    <circle cx="0" cy="-13" r="12" fill="#fff"/>
+  </g>
+  <text x="400" y="345" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#55717c" letter-spacing="2">LOCATION MAP</text>
+  <text x="400" y="368" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#7e97a1" letter-spacing="1">LOCATION TO BE CONFIRMED</text>
+</svg>

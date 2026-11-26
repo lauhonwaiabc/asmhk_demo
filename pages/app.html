@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{event.shortName}} &mdash; Event app</title>
+<meta name="description" content="Programme, Free Paper and e-Poster, faculty, slot attendance, personal schedule and event information for the {{event.name}}.">
+<meta name="theme-color" content="#123f63">
+<link rel="manifest" href="manifest.webmanifest?v=pseudo-20261126120000">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png?v=pseudo-20261126120000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="{{event.shortName}}">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="../assets/images/favicon.svg?v=pseudo-20261126120000" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon.ico?v=pseudo-20261126120000" sizes="any">
+<link rel="icon" href="../assets/icons/favicon-32.png?v=pseudo-20261126120000" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/icons/favicon-16.png?v=pseudo-20261126120000" sizes="16x16" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css?v=pseudo-20261126120000">
+<link rel="stylesheet" href="../assets/css/app.css?v=pseudo-20261126120000">
+  <link rel="canonical" href="https://asmhk.org/pages/app.html">
+  <link rel="stylesheet" href="../assets/css/site.css?v=pseudo-20261126120000">
+</head>
+<body class="app">
+<a class="skip-link" href="#appMain">Skip to content</a>
+
+<header class="app-header">
+  <a class="app-brand" href="#/home" aria-label="{{event.shortName}} home">
+    <img class="app-brand-logo" src="../assets/images/asm2027-logo.png?v=pseudo-20261126120000" alt="" width="40" height="40">
+    <span class="app-brand-text">
+      <span class="app-brand-name">ASM <em>2027</em></span>
+      <small>Hong Kong &middot; 30&ndash;31 Oct</small>
+    </span>
+  </a>
+  <div class="app-actions">
+    <span class="app-status" id="netStatus" hidden>Offline</span>
+    <button class="app-install" id="installBtn" type="button" hidden>Install</button>
+    <a class="app-iconbtn app-scanlink" href="#/connect/scan" aria-label="Scan a QR code" title="Scan a QR code">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M8 8h3v3H8zM13 8h3M13 11h1M13 14h3v3h-3zM8 13v3h2"/></svg>
+    </a>
+    <a class="app-cardlink app-iconbtn" href="#/connect" aria-label="My card and QR code" title="My card and QR code">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h.01M17 21h4"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="appMain" class="app-main" tabindex="-1">
+
+  <section class="app-view" id="view-home" aria-labelledby="title-home">
+    <div class="home-hero">
+      <h1 class="sr-only" id="title-home">{{event.shortName}}</h1>
+      <span class="home-kicker">{{event.dateLabel}} &middot; {{venue.name}}</span>
+      <p class="home-copy">Programme, abstracts, faculty, stamp collection and sponsors &mdash; everything you need during the meeting.</p>
+    </div>
+
+    <div id="homeConnect" class="home-connect-slot"></div>
+
+    <h2 class="app-section-title">At the meeting</h2>
+    <div class="app-menu app-menu--grid">
+      <a class="app-menu-row" href="#/programme">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span>
+        <span class="app-menu-text"><strong>Programme</strong><small>Sessions, workshops and ceremonies</small></span>
+        <span class="app-menu-count" id="homeCountProgramme">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/favourites">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></span>
+        <span class="app-menu-text"><strong>Saved Programme</strong><small>Your saved sessions</small></span>
+        <span class="app-menu-count" id="homeCountSaved">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/submission">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span>
+        <span class="app-menu-text"><strong>Submission</strong><small>Free Paper, e-Poster &amp; Formal Project</small></span>
+        <span class="app-menu-count" id="homeCountSubmission">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/faculty">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="app-menu-text"><strong>Faculty</strong><small>Speakers, facilitators and judges</small></span>
+        <span class="app-menu-count" id="homeCountFaculty">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/stamps">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>
+        <span class="app-menu-text"><strong>Stamp Collection</strong><small>Collect 7 of 8 slot stamps</small></span>
+        <span class="app-menu-count" id="homeCountAttendance">0/8</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/connect">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="app-menu-text"><strong>My Connection</strong><small>Delegates you have met</small></span>
+        <span class="app-menu-count" id="homeCountConnections">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/sponsors">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></span>
+        <span class="app-menu-text"><strong>Sponsors</strong><small>Partners supporting {{event.shortName}}</small></span>
+        <span class="app-menu-count" id="homeCountSponsors">0</span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/info">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+        <span class="app-menu-text"><strong>Information</strong><small>Venue, dates and contacts</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="app-view" id="view-programme" aria-labelledby="title-programme" hidden>
+    <h1 class="app-title" id="title-programme">Programme</h1>
+    <p class="app-subtitle">Fri 29 &ndash; Sun {{event.day2}}</p>
+    <div class="app-eventbar">
+      <span id="appEventDate">{{event.dateLabel}} &middot; {{venue.name}}</span>
+      <a href="#/info">Venue &amp; info</a>
+    </div>
+
+    <div class="app-toolbar">
+      <div class="app-searchwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="sr-only" for="search">Search the programme</label>
+        <input class="app-search" id="search" type="search" placeholder="Search sessions, rooms, moderators" autocomplete="off">
+      </div>
+
+      <div class="app-days" id="dayFilter" role="group" aria-label="Choose a day">
+        <button type="button" data-day="day0">Fri 29<small>Oct</small></button>
+        <button type="button" data-day="day1">Sat 30<small>Oct</small></button>
+        <button type="button" data-day="day2">Sun 31<small>Oct</small></button>
+      </div>
+
+      <div class="app-chips" id="typeFilter" role="group" aria-label="Filter by session type">
+        <button type="button" data-type="all" aria-pressed="true">All</button>
+        <button type="button" data-type="symposium" aria-pressed="false">Symposia</button>
+        <button type="button" data-type="workshop" aria-pressed="false">Workshops</button>
+        <button type="button" data-type="event" aria-pressed="false">Ceremonies</button>
+      </div>
+    </div>
+
+    <div id="nowNext" class="app-now" hidden></div>
+    <p class="app-count" id="count" aria-live="polite"></p>
+    <div class="app-list" id="sessionList"></div>
+    <p class="app-empty" id="emptyState" hidden>No sessions match your search.</p>
+  </section>
+
+  <section class="app-view" id="view-submission" aria-labelledby="title-submission" hidden>
+    <h1 class="app-title" id="title-submission">Submission</h1>
+    <p class="app-subtitle">Free Paper, e-Poster and Formal Project abstracts</p>
+
+    <div class="app-chips app-subtabs app-subtabs--2" id="submissionTabs" role="group" aria-label="Choose a submission section">
+      <button type="button" data-sub="eposters" aria-pressed="true">Free Paper and e-Poster</button>
+      <button type="button" data-sub="formal-project" aria-pressed="false">Formal Project Prize</button>
+    </div>
+
+    <div id="submissionPane-eposters">
+    <div id="eposterPrizeInfo"></div>
+
+    <h2 class="app-group-title">Accepted e-Posters</h2>
+    <div class="app-toolbar">
+      <div class="app-searchwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="sr-only" for="eposterSearchApp">Search submissions</label>
+        <input class="app-search" id="eposterSearchApp" type="search" placeholder="Search e-Posters" autocomplete="off">
+      </div>
+      <div class="app-chips" id="eposterCats" role="group" aria-label="Filter by category"></div>
+    </div>
+    <p class="app-count" id="eposterCountApp" aria-live="polite"></p>
+    <div class="app-list" id="eposterList"></div>
+    <p class="app-empty" id="eposterEmptyApp" hidden>No e-Posters match your search.</p>
+    </div>
+
+    <div id="submissionPane-formal-project" hidden>
+      <div id="formalProjectAppInfo"></div>
+      <h2 class="app-group-title">Formal Project abstracts</h2>
+      <p class="app-hint">A separate invited session for HKCA trainee Formal Projects. Tap an abstract to read the full text.</p>
+      <div class="app-list" id="formalProjectAppList"></div>
+    </div>
+  </section>
+
+  <section class="app-view" id="view-faculty" aria-labelledby="title-faculty" hidden>
+    <h1 class="app-title" id="title-faculty">Faculty</h1>
+    <p class="app-subtitle">Biographies, affiliations and lecture details</p>
+
+    <div class="app-toolbar">
+      <div class="app-searchwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="sr-only" for="facultySearch">Search faculty</label>
+        <input class="app-search" id="facultySearch" type="search" placeholder="Search name, affiliation or country" autocomplete="off">
+      </div>
+      <div class="app-chips" id="facultyRoles" role="group" aria-label="Filter faculty by role"></div>
+    </div>
+
+    <p class="app-count" id="facultyCount" aria-live="polite"></p>
+    <div class="app-list app-people" id="facultyList"></div>
+    <p class="app-empty" id="facultyEmpty" hidden>No faculty match your search.</p>
+  </section>
+
+  <section class="app-view" id="view-sponsors" aria-labelledby="title-sponsors" hidden>
+    <h1 class="app-title" id="title-sponsors">Sponsors</h1>
+    <p class="app-subtitle">Partners supporting {{event.shortName}}</p>
+    <div class="app-sponsors" id="sponsorList"></div>
+    <p><a class="app-back" href="#/more">&larr; Back to more</a></p>
+  </section>
+
+  <section class="app-view" id="view-favourites" aria-labelledby="title-favourites" hidden>
+    <h1 class="app-title" id="title-favourites">My programme</h1>
+    <p class="app-subtitle">Your saved sessions, stored on this device</p>
+    <div class="app-list" id="favList"></div>
+    <p class="app-empty" id="favEmpty">Nothing saved yet.</p>
+    <div class="app-fav-actions">
+      <button class="app-btn" id="exportFavs" type="button">Download calendar (.ics)</button>
+      <button class="app-btn app-btn--ghost" id="clearFavs" type="button">Clear all</button>
+    </div>
+  </section>
+
+  <section class="app-view" id="view-info" aria-labelledby="title-info" hidden>
+    <h1 class="app-title" id="title-info">Event information</h1>
+    <p class="app-subtitle">Dates, venue and contacts</p>
+
+    <div class="app-card">
+      <h2>Dates</h2>
+      <div id="appDates">
+        <dl class="app-info-list"><div><dt>Meeting</dt><dd><strong>{{event.dateLabel}}</strong></dd></div></dl>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <h2>Venue</h2>
+      <div id="appVenue">
+        <dl class="app-info-list"><div><dt>Address</dt><dd><strong>{{venue.name}}</strong><br>{{venue.building}}<br>{{venue.street}}</dd></div></dl>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <h2>Pre-conference workshops</h2>
+      <div id="appPreConf">
+        <dl class="app-info-list">
+          <div><dt>Date</dt><dd>{{venue.preConference.label}}</dd></div>
+          <div><dt>Venue</dt><dd>Salon, 20/F, Crystal Court, {{venue.name}}</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <h2>Contact</h2>
+      <div id="appMoreInfo"></div>
+    </div>
+
+    <div class="app-card">
+      <h2>Plan your visit</h2>
+      <div class="app-menu">
+        <a class="app-menu-row" href="accommodation.html"><span class="app-menu-text"><strong>Accommodation</strong><small>Hotels and booking codes</small></span></a>
+        <a class="app-menu-row" href="travel-visa.html"><span class="app-menu-text"><strong>Travel &amp; visa</strong><small>Airport, MTR, taxi and letters</small></span></a>
+        <a class="app-menu-row" href="social-functions.html"><span class="app-menu-text"><strong>Social functions</strong><small>Conference / Congregation Dinner and Faculty Dinner</small></span></a>
+        <a class="app-menu-row" href="cpd.html"><span class="app-menu-text"><strong>CPD &amp; certificates</strong><small>Attendance and claiming</small></span></a>
+        <a class="app-menu-row" href="faqs.html"><span class="app-menu-text"><strong>FAQs</strong><small>Common questions</small></span></a>
+        <a class="app-menu-row" href="accessibility.html"><span class="app-menu-text"><strong>Accessibility</strong><small>Venue and assistance</small></span></a>
+      </div>
+    </div>
+
+    <p class="app-hint">Programme data is updated regularly. Times and rooms are subject to change.</p>
+  </section>
+
+  <section class="app-view" id="view-more" aria-labelledby="title-more" hidden>
+    <h1 class="app-title" id="title-more">More</h1>
+    <p class="app-subtitle">Everything else for the meeting</p>
+
+    <div class="app-menu">
+      <a class="app-menu-row" href="#/sponsors">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></span>
+        <span class="app-menu-text"><strong>Sponsors</strong><small>Industry partners and exhibitors</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/info">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+        <span class="app-menu-text"><strong>Event information</strong><small>Venue, dates and contacts</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/connect/qr">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h.01M17 21h4"/></svg></span>
+        <span class="app-menu-text"><strong>My card &amp; QR code</strong><small>Share your contact details</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/connect/scan">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M8 8h3v3H8zM13 8h3M13 11h1M13 14h3v3h-3zM8 13v3h2"/></svg></span>
+        <span class="app-menu-text"><strong>Scan a QR code</strong><small>Contact cards or session stamps</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="app-menu-row" href="#/connect">
+        <span class="app-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="app-menu-text"><strong>My connections</strong><small>Delegates you have met</small></span>
+        <svg class="app-menu-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <p class="app-hint">This app works offline and keeps your saved sessions, card, connections and stamp collection on this device.</p>
+  </section>
+
+  <section class="app-view" id="view-connect" aria-labelledby="title-connect" hidden>
+    <h1 class="app-title" id="title-connect">Connect</h1>
+    <div id="connectHub"></div>
+  </section>
+
+  <section class="app-view" id="view-mycard" hidden>
+    <div id="myCardView"></div>
+  </section>
+
+  <section class="app-view" id="view-scan" hidden>
+    <div id="scanView"></div>
+  </section>
+
+  <section class="app-view" id="view-attendance" hidden>
+    <div id="attendanceView"></div>
+  </section>
+
+  <section class="app-view" id="view-attendanceScan" hidden>
+    <div id="attendanceScanView"></div>
+  </section>
+
+  <section class="app-view" id="view-cardEdit" hidden>
+    <div id="cardEditView"></div>
+  </section>
+
+  <section class="app-view" id="view-session" aria-labelledby="title-session" hidden>
+    <button class="app-back" id="backBtn" type="button" aria-label="Back to programme">&larr; Back</button>
+    <div id="sessionDetail"></div>
+  </section>
+
+  <section class="app-view" id="view-person" hidden>
+    <button class="app-back" id="personBack" type="button" aria-label="Back to faculty">&larr; Back</button>
+    <div id="personDetail"></div>
+  </section>
+
+  <section class="app-view" id="view-eposter" hidden>
+    <button class="app-back" id="eposterBack" type="button" aria-label="Back to e-Posters">&larr; Back</button>
+    <div id="eposterDetail"></div>
+  </section>
+
+</main>
+
+<nav class="app-nav" aria-label="App sections">
+  <a href="#/home" data-nav="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+    <span>Home</span>
+  </a>
+  <a href="#/programme" data-nav="programme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
+    <span>Programme</span>
+  </a>
+  <a href="#/favourites" data-nav="favourites">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
+    <span>Saved</span>
+  </a>
+  <a href="#/submission" data-nav="submission">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+    <span>Submission</span>
+  </a>
+  <a href="#/stamps" data-nav="stamps">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+    <span>Stamp</span>
+  </a>
+  <a href="#/connect" data-nav="connect">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span>Connection</span>
+  </a>
+</nav>
+
+<div class="app-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../assets/js/data/meta.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/committee.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/people.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/programme.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/abstracts.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/registration.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/sponsors.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/contact.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/news.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/accommodation.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/cpd.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/event-facts.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/asm-data.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/qr.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/vendor/jsQR.min.js?v=pseudo-20261126120000" defer></script>
+<script src="../assets/js/connect.js?v=pseudo-20261126120000" defer></script>
+<script src="../assets/js/attendance.js?v=pseudo-20261126120000" defer></script>
+<script src="../assets/js/app.js?v=pseudo-20261126120000" defer></script>
+<script src="../assets/js/pwa.js?v=pseudo-20261126120000" defer></script>
+  <script src="../assets/js/data/pages.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/site.js?v=pseudo-20261126120000"></script>
+</body>
+</html>

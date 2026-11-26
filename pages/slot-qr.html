@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slot QR codes — {{event.shortName}}</title>
+<meta name="description" content="Organiser page for {{event.shortName}} session, symposium and workshop QR codes.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/images/favicon.svg?v=pseudo-20261126120000" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon.ico?v=pseudo-20261126120000" sizes="any">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css?v=pseudo-20261126120000">
+<style>
+  .slotqr-page { padding: 18px 0 40px; }
+  .slotqr-gate {
+    max-width: 460px; margin: 60px auto; padding: 26px 28px;
+    background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--navy);
+    box-shadow: 0 8px 30px rgba(14, 62, 91, .08);
+  }
+  .slotqr-gate h1 { margin: 0 0 6px; font-size: 24px; color: var(--navy); }
+  .slotqr-gate p { font-size: 13.5px; line-height: 1.55; color: #45606b; }
+  .slotqr-gate label { display: block; margin: 16px 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #53707c; }
+  .slotqr-gate input {
+    width: 100%; padding: 10px 12px; border: 1px solid #b9c9cf; border-radius: 7px;
+    font: inherit; font-size: 15px; color: var(--navy); background: #fff;
+  }
+  .slotqr-gate input:focus { outline: 2px solid #2f8f8a; outline-offset: 1px; }
+  .slotqr-gate button { margin-top: 12px; }
+  .slotqr-gate .slotqr-error { margin: 10px 0 0; color: #a34b4b; font-weight: 700; }
+  .org-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0; border-bottom: 2px solid #acd7ca; padding-bottom: 10px; }
+  .org-tabs button { border: 1px solid #b9c9cf; background: #fff; color: var(--navy); padding: 8px 14px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .org-tabs button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .org-tabs .org-lock { margin-left: auto; border-color: #d4a0a0; color: #8a3434; }
+  .desk-layout { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .desk-scan-card { background: #fff; border: 1px solid #dbe8ed; border-top: 5px solid var(--navy); padding: 16px; }
+  .desk-scan-card h2 { margin: 0 0 4px; font-size: 20px; color: var(--navy); }
+  .desk-scan-card p { font-size: 13px; line-height: 1.5; color: #53707c; }
+  .desk-scan-stage { position: relative; aspect-ratio: 4 / 3; background: #0f2330; overflow: hidden; border-radius: 8px; margin: 12px 0; }
+  .desk-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .desk-frame { position: absolute; inset: 12%; border: 3px solid rgba(255, 255, 255, .9); border-radius: 12px; pointer-events: none; }
+  .desk-hint { font-size: 12.5px; color: #53707c; margin: 6px 0 10px; }
+  .desk-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .desk-result { background: #fff; border: 1px solid #dbe8ed; padding: 18px; min-height: 160px; }
+  .desk-result.is-ok { border-left: 5px solid #2f8f8a; background: #f4fbfa; }
+  .desk-result.is-no { border-left: 5px solid #c99a3a; background: #fffaf0; }
+  .desk-result.is-bad { border-left: 5px solid #b65a5a; background: #fff7f7; }
+  .desk-result h2 { margin: 0 0 6px; color: var(--navy); font-size: 20px; }
+  .desk-result p { font-size: 13.5px; line-height: 1.55; margin: 0 0 8px; }
+  .desk-kicker { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #53707c; }
+  .desk-device { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; }
+  .desk-sessions { margin: 8px 0 12px; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .desk-sessions li { padding: 7px 9px; background: #fff; border: 1px solid #e2eef1; border-radius: 7px; font-size: 12px; line-height: 1.4; }
+  .desk-sessions span { display: block; color: #53707c; font-size: 11px; }
+  .desk-log { background: #fff; border: 1px solid #dbe8ed; padding: 16px; margin-top: 16px; }
+  .desk-log h2 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
+  .desk-log-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .desk-log-table th, .desk-log-table td { border-bottom: 1px solid #e2eef1; padding: 7px 6px; text-align: left; vertical-align: top; }
+  .desk-log-table th { font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: #53707c; }
+  .desk-log-empty { font-size: 12.5px; color: #53707c; }
+  @media (max-width: 760px) { .desk-layout { grid-template-columns: 1fr; } }
+  .slotqr-page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+  .slotqr-page-head h1 { margin: 0; }
+  .slotqr-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .slotqr-day { margin: 26px 0 10px; font-size: 17px; color: var(--navy); border-bottom: 2px solid #acd7ca; padding-bottom: 6px; }
+  .slotqr-slot { margin: 18px 0 10px; }
+  .slotqr-slot h3 { margin: 0; font-size: 15px; color: #0e4e77; }
+  .slotqr-slot p { margin: 2px 0 0; font-size: 12.5px; color: #53707c; }
+  .slotqr-session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .slotqr-session { display: flex; gap: 12px; padding: 12px; background: #fff; border: 1px solid #dbe8ed; border-left: 4px solid #2f8f8a; border-radius: 10px; break-inside: avoid; }
+  .slotqr-session-code { flex: 0 0 auto; }
+  .slotqr-session-code svg { width: 132px; height: 132px; display: block; }
+  .slotqr-session-main { flex: 1 1 auto; min-width: 0; }
+  .slotqr-session-main .detail-type { font-size: 9px; }
+  .slotqr-session-main h4 { margin: 3px 0 4px; font-size: 14px; line-height: 1.35; color: var(--navy); }
+  .slotqr-session-main p { margin: 0 0 3px; font-size: 11.5px; line-height: 1.4; color: #53707c; }
+  .slotqr-session-main a { font-size: 11.5px; font-weight: 700; color: #0e4e77; }
+  .slotqr-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: .08em; color: #123f63; }
+  .slotqr-display { max-width: 760px; margin: 0 auto; text-align: center; }
+  .slotqr-display h1 { margin: 4px 0 0; }
+  .slotqr-display .slotqr-when { margin: 2px 0 14px; font-weight: 700; color: #2f8f8a; }
+  .slotqr-big { display: inline-block; padding: 14px; background: #fff; border: 1px solid #dbe8ed; border-radius: 16px; box-shadow: 0 4px 18px rgba(14, 62, 91, .08); }
+  .slotqr-big svg { width: min(70vw, 520px); height: auto; display: block; }
+  .slotqr-display .slotqr-rooms { margin: 12px auto; max-width: 460px; text-align: left; }
+  .slotqr-display .slotqr-rooms li { margin-bottom: 4px; }
+  @media (max-width: 520px) { .slotqr-session { flex-direction: column; } }
+  @media print {
+    .site-header, .site-footer, .to-top, .slotqr-actions, .slotqr-session-main a, .slotqr-display .btn { display: none !important; }
+    .slotqr-page { padding: 0; }
+    .slotqr-session-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .slotqr-session { border: 1px solid #777; }
+    .slotqr-session-code svg { width: 118px; height: 118px; }
+    .slotqr-big svg { width: 150mm; height: 150mm; }
+  }
+</style>
+  <link rel="canonical" href="https://asmhk.org/pages/slot-qr.html">
+  <link rel="stylesheet" href="../assets/css/site.css?v=pseudo-20261126120000">
+</head>
+<body data-page="slot-qr">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="../index.html" aria-label="ASM 2027 home">
+      <img class="brand-mark" src="../assets/images/asm2027-logo.png?v=pseudo-20261126120000" alt="" width="44" height="44">
+      <span class="brand-text">{{event.shortName}}<small>{{event.city}}</small></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-controls="siteNav" aria-expanded="false">
+      <span></span>
+    </button>
+    <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+      <ul>
+        <li><a href="../index.html" data-nav="home">Home</a></li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="aboutMenu">About <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="aboutMenu">
+            <li><a href="../index.html#welcome">Welcome</a></li>
+            <li><a href="event.html">Event</a></li>
+            <li><a href="committees.html">Committees</a></li>
+            <li><a href="meeting-information.html">Venue</a></li>
+            <li><a href="travel-visa.html">Travel, visa &amp; letters</a></li>
+            <li><a href="accommodation.html">Accommodation</a></li>
+            <li><a href="accessibility.html">Accessibility</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="programmeMenu">Programme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="programmeMenu">
+            <li><a href="programme.html">Programme</a></li>
+            <li><a href="faculty.html">Faculty</a></li>
+            <li><a href="e-posters.html">Free Paper &amp; e-Poster</a></li>
+            <li><a href="formal-project-prize.html">Formal Project Prize Session</a></li>
+            <li><a href="cpd.html">CME/CPD</a></li>
+            <li><a href="ondemand.html">OnDemand</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="participateMenu">Participate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="participateMenu">
+            <li><a href="registration.html">Registration</a></li>
+            <li><a href="call-for-eposter.html">Call for Free Paper &amp; e-Poster</a></li>
+            <li><a href="call-for-formal-project.html">Formal Project Prize</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="engageMenu">Engagement <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="engageMenu">
+            <li><a href="social-functions.html">Social functions</a></li>
+            <li><a href="college-ceremony.html">HKCA Congregation Ceremony</a></li>
+            <li><a href="explore-hong-kong.html">Explore Hong Kong</a></li>
+            <li><a href="news.html">News</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="sponsorshipMenu">Sponsorship <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="sponsorshipMenu">
+            <li><a href="our-sponsors.html">Our sponsors</a></li>
+            <li><a href="sponsorship-exhibition.html">Packages</a></li>
+            <li><a href="sponsor-application.html">Apply</a></li>
+          </ul>
+        </li>
+<li class="has-dropdown">
+          <button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls="helpMenu">Help <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="dropdown" id="helpMenu">
+            <li><a href="faqs.html">FAQ</a></li>
+            <li><a href="search.html">Search</a></li>
+            <li><a href="contact-us.html">Contact</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms</a></li>
+            <li><a href="past-asm.html">Past ASM</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="container slotqr-gate" id="slotQrGate" aria-labelledby="slotQrGateTitle">
+    <h1 id="slotQrGateTitle">Organiser access</h1>
+    <p>Enter the organiser password to open the souvenir desk verifier and session QR tools.</p>
+    <div id="slotQrLogin" class="slotqr-gate-form">
+      <label for="slotQrPassword">Password</label>
+      <input id="slotQrPassword" type="password" autocomplete="current-password" required>
+      <button class="btn btn-primary" type="button" id="slotQrUnlock">Unlock</button>
+      <p class="slotqr-error" id="slotQrError" role="alert" hidden>Incorrect password.</p>
+    </div>
+  </section>
+
+  <div class="container" id="orgApp" hidden>
+    <div class="org-tabs" role="group" aria-label="Organiser tools">
+      <button type="button" data-tab="desk" aria-pressed="true">Souvenir desk</button>
+      <button type="button" data-tab="codes" aria-pressed="false">Session QR codes</button>
+      <button type="button" class="org-lock" data-act="lock">Lock</button>
+    </div>
+
+    <section id="deskPanel" aria-labelledby="deskTitle">
+      <div class="slotqr-page-head">
+        <div>
+          <p class="breadcrumb"><a href="../index.html">Home</a><span>/</span>Organiser tools <span>/</span> Souvenir desk</p>
+          <h1 class="section-title" id="deskTitle">Souvenir desk</h1>
+          </div>
+      </div>
+      <div class="desk-layout">
+        <div class="desk-scan-card">
+          <h2>Scan stamp card</h2>
+          <p>Point the camera at the delegate's large stamp-card QR.</p>
+          <div class="desk-scan-stage">
+            <video class="desk-video" id="deskVideo" playsinline muted aria-label="Camera preview"></video>
+            <div class="desk-frame" aria-hidden="true"></div>
+          </div>
+          <p class="desk-hint" id="deskHint" role="status">Tap Start camera, then scan the delegate's stamp card.</p>
+          <div class="desk-actions">
+            <button class="btn btn-primary" type="button" data-act="startDeskScan">Start camera</button>
+            <button class="btn btn-secondary" type="button" data-act="stopDeskScan" hidden>Stop</button>
+          </div>
+        </div>
+        <div id="deskResult" class="desk-result">
+          <p class="desk-kicker">Waiting for scan</p>
+          <p>Scan a stamp card to check whether the delegate should receive a souvenir.</p>
+        </div>
+      </div>
+      <div class="desk-log">
+        <h2>Redemption log</h2>
+        <p class="desk-log-empty" id="deskLogEmpty">No souvenirs recorded yet.</p>
+        <div id="deskLogWrap" hidden></div>
+        <div class="desk-actions" style="margin-top:12px">
+          <button class="btn btn-secondary" type="button" data-act="exportDeskLog">Export CSV</button>
+          <button class="btn btn-secondary" type="button" data-act="clearDeskLog">Clear log</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="codesPanel" hidden>
+      <div class="slotqr-page" id="slotQrContent"></div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img class="footer-logo" src="../assets/images/logo.png" alt="The Hong Kong College of Anaesthesiologists and The Society of Anaesthetists of Hong Kong">
+        <p class="footer-title">{{event.name}}</p>
+        <p>{{event.dateLabel}}<br>{{venue.short}}</p>
+        <p><a href="contact-us.html">Contact the {{event.shortName}} team</a></p>
+        <p class="footer-hashtag">{{event.hashtag}}</p>
+      </div>
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="programme.html">Programme</a></li>
+          <li><a href="registration.html">Registration</a></li>
+          <li><a href="accommodation.html">Accommodation</a></li>
+          <li><a href="travel-visa.html">Travel &amp; visa</a></li>
+          <li><a href="social-functions.html">Social functions</a></li>
+          <li><a href="explore-hong-kong.html">Explore Hong Kong</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Programme &amp; help</h3>
+        <ul>
+          <li><a href="faculty.html">Faculty</a></li>
+          <li><a href="e-posters.html">Free Paper &amp; e-Poster</a></li>
+          <li><a href="cpd.html">CME/CPD &amp; certificates</a></li>
+          <li><a href="academic-accreditation.html">Academic accreditation</a></li>
+          <li><a href="ondemand.html">OnDemand</a></li>
+          <li><a href="faqs.html">FAQs</a></li>
+          <li><a href="past-asm.html">Past ASM</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="contact-us.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Sponsorship &amp; about</h3>
+        <ul>
+          <li><a href="our-sponsors.html">Our sponsors</a></li>
+          <li><a href="sponsorship-exhibition.html">Packages</a></li>
+          <li><a href="sponsor-application.html">Apply to exhibit</a></li>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright &copy; {{event.year}} &middot; {{event.shortName}} &middot; All Rights Reserved</p>
+      <p class="footer-credit">Banner photo: <a href="https://commons.wikimedia.org/wiki/File:Hong_Kong_Skyline_Panorama_-_Dec_2008.jpg" target="_blank" rel="noopener">David Iliff</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. Official site: asmhk.org</p>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/data/meta.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/data/programme.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/news.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/accommodation.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/cpd.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/contact.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/event-facts.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/asm-data.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/qr.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/vendor/jsQR.min.js?v=pseudo-20261126120000"></script>
+<script src="../assets/js/slot-qr.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/data/pages.js?v=pseudo-20261126120000"></script>
+  <script src="../assets/js/site.js?v=pseudo-20261126120000"></script>
+</body>
+</html>

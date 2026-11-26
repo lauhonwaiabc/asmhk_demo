@@ -1,0 +1,35 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ASM 2027//Annual Scientific Meeting in Anaesthesiology//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:Asia/Hong_Kong
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0800
+TZOFFSETTO:+0800
+TZNAME:HKT
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:asm2027@anaesthesiology.hk
+DTSTAMP:20261114T000000Z
+DTSTART;TZID=Asia/Hong_Kong:20271030T084500
+DTEND;TZID=Asia/Hong_Kong:20271031T180000
+SUMMARY:Annual Scientific Meeting in Anaesthesiology 2027
+LOCATION:Hopewell Hotel\, 15 Kennedy Road\, Wan Chai\, Hong Kong
+DESCRIPTION:Theme: Anaesthesia Intelligence. https://asmhk.org/
+URL:https://asmhk.org/
+END:VEVENT
+BEGIN:VEVENT
+UID:asm2027-preconf@anaesthesiology.hk
+DTSTAMP:20261114T000000Z
+DTSTART;VALUE=DATE:20271029
+DTEND;VALUE=DATE:20271030
+SUMMARY:ASM 2027 Pre-conference Workshops
+LOCATION:Salon 2-3\, Crystal Court\, Hopewell Hotel\, Hong Kong
+DESCRIPTION:Pre-conference workshops: Agentic AI; Airway; PBL 1 and 2. https://asmhk.org/pages/programme.html
+URL:https://asmhk.org/pages/programme.html
+END:VEVENT
+END:VCALENDAR
