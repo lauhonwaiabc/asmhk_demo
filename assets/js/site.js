@@ -1,0 +1,613 @@
+/* ASM 2027 — new page behaviour
+   Progressive enhancement for the content platform: empty states, hotels,
+   FAQs, news, CPD tables, search and active navigation.
+   No dependencies. */
+(function () {
+  "use strict";
+
+  var doc = document;
+  var S = window.ASM_SITE || {};
+  var D = window.ASM_DATA || {};
+  var CFG = S.config || {};
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function attr(v) { return esc(v); }
+  function qs(sel, root) { return (root || doc).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || doc).querySelectorAll(sel)); }
+  function isBlank(v) { return v === undefined || v === null || String(v).trim() === ""; }
+  function tbc(label) { return '<span class="tbc">' + esc(label || "To be confirmed") + "</span>"; }
+  function money(v) {
+    if (isBlank(v)) return tbc();
+    var s = String(v);
+    if (/^(HK\$|By|Free|Included|TBC)/i.test(s)) return esc(s);
+    return "HK$" + esc(s);
+  }
+  function slug(text) {
+    return String(text || "").toLowerCase().replace(/&amp;/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+  function formatDate(iso) {
+    if (!iso) return "";
+    var parts = String(iso).split("-");
+    if (parts.length !== 3) return esc(iso);
+    var d = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2]));
+    if (isNaN(d.getTime())) return esc(iso);
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  }
+  function emptyState(title, text, ctaLabel, ctaHref) {
+    return '<div class="empty-state"><strong>' + esc(title) + "</strong><p>" + esc(text) + "</p>" +
+      (ctaLabel && ctaHref ? '<a class="btn btn-secondary" href="' + attr(ctaHref) + '">' + esc(ctaLabel) + "</a>" : "") +
+      "</div>";
+  }
+
+  /* ---------------------------------------------------------------- hotels */
+  function hotelCard(h) {
+    var rates = "";
+    if (!isBlank(h.single) || !isBlank(h.double)) {
+      rates = '<table class="table01" style="margin:10px 0"><tbody>' +
+        '<tr><th style="width:55%">Room</th><th>Per night</th></tr>' +
+        '<tr><td>Single</td><td class="num">' + money(h.single) + "</td></tr>" +
+        '<tr><td>Double / twin</td><td class="num">' + money(h.double) + "</td></tr>" +
+        "</tbody></table>";
+    }
+    return '<article class="info-card info-card--accent">' +
+      "<h3>" + esc(h.name || "Hotel partner") + "</h3>" +
+      (h.stars ? '<p class="muted" style="margin:0 0 6px">' + esc(h.stars) + " &middot; " + esc(h.distance || "Distance to be confirmed") + "</p>" : "") +
+      (h.address ? "<p>" + esc(h.address) + "</p>" : "") +
+      rates +
+      "<p><strong>Booking code:</strong> " + (isBlank(h.code) ? tbc() : "<code>" + esc(h.code) + "</code>") + "<br>" +
+      "<strong>Cut-off:</strong> " + (isBlank(h.cutoff) ? tbc() : esc(h.cutoff)) + "<br>" +
+      "<strong>Cancellation:</strong> " + (isBlank(h.cancellation) ? tbc() : esc(h.cancellation)) + "</p>" +
+      (h.family ? "<p><strong>Family:</strong> " + esc(h.family) + "</p>" : "") +
+      (h.access ? "<p><strong>Access:</strong> " + esc(h.access) + "</p>" : "") +
+      (h.url ? '<p><a class="btn btn-secondary" href="' + attr(h.url) + '" target="_blank" rel="noopener">Hotel website</a></p>' : "") +
+      "</article>";
+  }
+
+  function renderHotels() {
+    var host = qs('[data-render="hotels"]');
+    if (!host) return;
+    var data = D.accommodation || {};
+    var hotels = data.hotels || [];
+    if (!hotels.length) {
+      host.innerHTML = emptyState(
+        data.emptyTitle || "Hotel partners are being confirmed",
+        data.bookingNote || "Negotiated rates and booking codes will be published here."
+      );
+      return;
+    }
+    host.innerHTML = '<div class="info-grid">' + hotels.map(hotelCard).join("") + "</div>";
+  }
+
+  /* ---------------------------------------------------------------- social */
+  function socialCard(f) {
+    var image = f.image
+      ? '<img class="card-photo" src="' + attr(window.ASM_URL ? window.ASM_URL(f.image) : f.image) + '" alt="' + esc(f.imageAlt || f.name) + '" loading="lazy">'
+      : "";
+    return '<article class="info-card info-card--accent">' +
+      image +
+      "<h3>" + esc(f.name) + "</h3>" +
+      "<p><strong>Date:</strong> " + (isBlank(f.date) ? tbc() : esc(f.date)) + "<br>" +
+      "<strong>Time:</strong> " + (isBlank(f.time) ? tbc() : esc(f.time)) + "<br>" +
+      "<strong>Venue:</strong> " + (isBlank(f.venue) ? tbc() : esc(f.venue)) + "</p>" +
+      (f.note ? "<p>" + esc(f.note) + "</p>" : "") +
+      "</article>";
+  }
+
+  function renderSocial() {
+    var host = qs('[data-render="social"]');
+    if (!host) return;
+    var list = ((D.meta || {}).social && D.meta.social.functions) || [];
+    if (!list.length) {
+      host.innerHTML = emptyState("Social programme is being finalised", "Details will be published here when confirmed.");
+      return;
+    }
+    host.innerHTML = '<div class="info-grid">' + list.map(socialCard).join("") + "</div>";
+  }
+
+  /* ------------------------------------------------------------------ news */
+  function publishedNews() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return (D.news || []).filter(function (n) {
+      if (!n.date) return true;
+      var d = new Date(n.date + "T00:00:00");
+      return !isNaN(d.getTime()) && d <= today;
+    }).sort(function (a, b) {
+      return String(b.date || "").localeCompare(String(a.date || ""));
+    });
+  }
+
+  function renderNews() {
+    var host = qs('[data-render="news"]');
+    if (!host) return;
+    var list = publishedNews();
+    if (!list.length) {
+      host.innerHTML = emptyState("No news yet", "Updates will be published here as arrangements are confirmed.");
+      return;
+    }
+    host.innerHTML = '<h2 class="subheader1">Latest updates</h2><div class="news-list">' + list.map(function (n) {
+      return '<article class="news-item">' +
+        '<p class="date">' + esc(formatDate(n.date)) + (n.tag ? " &middot; " + esc(n.tag) : "") + "</p>" +
+        "<h2>" + esc(n.title) + "</h2>" +
+        "<p>" + esc(n.summary) + "</p>" +
+        (n.url ? '<p><a href="' + attr(n.url) + '">Read more &rarr;</a></p>' : "") +
+        "</article>";
+    }).join("") + "</div>";
+  }
+
+  function renderHomeNews() {
+    var host = qs('[data-render="news-home"]');
+    if (!host) return;
+    var list = publishedNews().slice(0, 3);
+    if (!list.length) {
+      host.innerHTML = emptyState("Updates coming soon", "News will appear here as arrangements are confirmed.");
+      return;
+    }
+    host.innerHTML = list.map(function (n) {
+      return '<article class="news-card">' +
+        '<p class="date" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5a7480;margin:0">' +
+        esc(formatDate(n.date)) + (n.tag ? " &middot; " + esc(n.tag) : "") + "</p>" +
+        "<h3>" + esc(n.title) + "</h3>" +
+        "<p>" + esc(n.summary) + "</p>" +
+        "</article>";
+    }).join("");
+  }
+
+  function renderCeremony() {
+    var host = qs('[data-render="ceremony"]');
+    if (!host) return;
+    var meta = D.meta || {};
+    var c = (meta.ceremony && meta.ceremony.details) || {};
+    var dinner = (meta.ceremony && meta.ceremony.dinner) || {};
+    function line(v) { return isBlank(v) ? tbc() : esc(v); }
+    host.innerHTML = '<div class="info-grid">' +
+      '<article class="info-card"><h3>Date and time</h3><p>' + line([c.date, c.time].filter(Boolean).join(", ")) + "</p></article>" +
+      '<article class="info-card"><h3>Venue</h3><p>' + line(c.venue) + "</p></article>" +
+      '<article class="info-card"><h3>Photo booth</h3><p>' + (isBlank(c.photoBoothArea) ? line(c.photoBooth) : esc(c.photoBoothArea) + " on <strong>" + esc(c.photoBoothFloor) + ", " + esc(meta.venue.name) + "</strong>") + "</p></article>" +
+      '<article class="info-card"><h3>Conference / Congregation Dinner</h3><p>' +
+        (isBlank(dinner.date) ? tbc() : esc(dinner.date)) + (isBlank(dinner.time) ? "" : ", " + esc(dinner.time)) +
+        (isBlank(dinner.venue) ? "" : "<br>" + esc(dinner.venue)) + "</p></article>" +
+      "</div>";
+  }
+
+  function renderCeremonySchedule() {
+    var host = qs('[data-render="ceremony-schedule"]');
+    if (!host) return;
+    var c = (D.meta && D.meta.ceremony) || {};
+    var rows = c.schedule || [];
+    if (!rows.length) {
+      host.innerHTML = '<p class="muted">The schedule will be published when confirmed.</p>';
+      return;
+    }
+    host.innerHTML = '<div class="table-wrap"><table class="table01" style="max-width:620px">' +
+      '<thead><tr><th>Time</th><th>Arrangement</th></tr></thead><tbody>' +
+      rows.map(function (row) {
+        return "<tr><td>" + esc(row.time) + "</td><td>" + esc(row.item) + "</td></tr>";
+      }).join("") +
+      "</tbody></table></div>";
+  }
+
+  /* ------------------------------------------------------------------- FAQ */
+  function initFaqFilter() {
+    var input = qs("[data-faq-filter]");
+    if (!input) return;
+    input.addEventListener("input", function () {
+      var q = input.value.toLowerCase().trim();
+      qsa(".faq-item").forEach(function (item) {
+        item.style.display = !q || item.textContent.toLowerCase().indexOf(q) !== -1 ? "" : "none";
+      });
+      qsa(".faq-cat").forEach(function (cat) {
+        var any = qsa(".faq-item", cat).some(function (i) { return i.style.display !== "none"; });
+        cat.style.display = any ? "" : "none";
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------- CPD */
+  function renderCpd() {
+    var host = qs('[data-render="cpd-table"]');
+    if (!host) return;
+    var data = D.cpd || {};
+    var rows = data.confirmed || [];
+    if (!rows.length) {
+      host.innerHTML = emptyState(
+        data.emptyTitle || "Confirmed accreditation will be published here",
+        data.emptyText || "Only confirmed CME, CPD and CNE points are shown."
+      );
+      return;
+    }
+    host.innerHTML = '<div class="table-wrap"><table class="table01"><thead><tr>' +
+      "<th>College / association</th><th>Whole meeting</th><th>Day 1</th><th>Day 2</th><th>Category</th>" +
+      "</tr></thead><tbody>" + rows.map(function (r) {
+        return "<tr><td><strong>" + esc(r.body) + "</strong></td>" +
+          '<td class="num">' + esc(r.whole) + "</td>" +
+          '<td class="num">' + esc(r.day1) + "</td>" +
+          '<td class="num">' + esc(r.day2) + "</td>" +
+          '<td class="note">' + esc(r.category) + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+
+  /* ------------------------------------------------------------------ types */
+  function typeLabel(type) {
+    var map = {
+      "pre-conference": "Pre-conference", "workshop": "Workshop", "plenary": "Plenary",
+      "symposium": "Symposium", "ceremony": "Ceremony", "social": "Social",
+      "lecture": "Lecture", "break": "Break", "session": "Session", "nursing": "Nursing",
+      "event": "Event"
+    };
+    return map[type] || (type ? String(type).replace(/-/g, " ") : "Session");
+  }
+
+  /* ---------------------------------------------------------------- search */
+  var searchBase = [];
+
+  function searchIndex() {
+    var node = doc.getElementById("asmSearchIndex");
+    if (node) {
+      try { searchBase = JSON.parse(node.textContent || "[]"); } catch (e) { searchBase = []; }
+    }
+    var index = searchBase.slice();
+    (D.sessions || []).forEach(function (s) {
+      index.push({
+        title: s.title,
+        url: "programme.html#s-" + s.id,
+        kind: "Session",
+        keywords: [s.title, s.summary, s.room, typeLabel(s.type)].join(" "),
+        summary: [s.time, s.room].filter(Boolean).join(" · ")
+      });
+    });
+    return index;
+  }
+
+  function renderSearch() {
+    var input = qs("#siteSearchInput");
+    var results = qs("#siteSearchResults");
+    var meta = qs("#siteSearchMeta");
+    if (!input || !results) return;
+    var index = searchIndex();
+
+    function paint() {
+      var q = input.value.toLowerCase().trim();
+      var list = q
+        ? index.filter(function (item) {
+            return (item.title + " " + item.keywords + " " + item.summary).toLowerCase().indexOf(q) !== -1;
+          })
+        : searchBase.slice(0, 12);
+      meta.textContent = q
+        ? list.length + (list.length === 1 ? " result" : " results") + " for “" + input.value.trim() + "”"
+        : "Popular pages";
+      results.innerHTML = list.slice(0, 30).map(function (item) {
+        return '<li class="search-result"><span class="kind">' + esc(item.kind) + "</span>" +
+          '<div><a href="' + attr(item.url) + '">' + esc(item.title) + "</a></div>" +
+          (item.summary ? "<p>" + esc(item.summary) + "</p>" : "") + "</li>";
+      }).join("") || '<li class="search-result"><p>No matches. Try a shorter word or browse the FAQ.</p></li>';
+    }
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("q")) input.value = params.get("q");
+    input.addEventListener("input", paint);
+    var button = qs("#siteSearchButton");
+    if (button) button.addEventListener("click", paint);
+    paint();
+  }
+
+  /* --------------------------------------------------------------- sponsors */
+  function renderPackageCompare() {
+    var host = qs('[data-render="package-compare"]');
+    if (!host) return;
+    var list = D.packages || [];
+    if (!list.length) {
+      host.innerHTML = "";
+      return;
+    }
+    host.innerHTML = '<h2 class="subheader1">Compare packages</h2><div class="table-wrap"><table class="table01"><thead><tr>' +
+      "<th>Package</th><th>What is included</th><th>Investment (HK$)</th><th>Status</th>" +
+      "</tr></thead><tbody>" + list.map(function (p) {
+        return "<tr><td><strong>" + esc(p.name) + "</strong></td><td>" + esc(p.includes) + "</td>" +
+          '<td class="num">' + (isBlank(p.price) ? tbc() : esc(p.price)) + "</td>" +
+          '<td class="note">' + (isBlank(p.price) ? "To be confirmed" : "Available") + "</td></tr>";
+      }).join("") + "</tbody></table></div>" +
+      '<p class="muted" style="font-size:12.5px">All amounts in Hong Kong dollars. Availability is confirmed on receipt of a signed contract.</p>';
+  }
+
+  /* -------------------------------------------------------------- analytics */
+  function initAnalytics() {
+    var domain = CFG.plausibleDomain;
+    if (!domain || domain === "REPLACE_ME" || window.__asmAnalytics) return;
+    window.__asmAnalytics = true;
+    var s = doc.createElement("script");
+    s.defer = true;
+    s.setAttribute("data-domain", domain);
+    s.src = "https://plausible.io/js/script.js";
+    doc.head.appendChild(s);
+  }
+
+  /* ------------------------------------------------------------------- nav */
+  var SCROLL_KEY = "asmScrollToContent";
+
+  function initInternalNavScroll() {
+    doc.addEventListener("click", function (e) {
+      var a = e.target.closest("a[href]");
+      if (!a) return;
+      if (a.target === "_blank" || a.hasAttribute("download")) return;
+      var href = a.getAttribute("href") || "";
+      if (!href || href.charAt(0) === "#" || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+      var url;
+      try { url = new URL(a.href, window.location.href); } catch (err) { return; }
+      if (url.origin !== window.location.origin) return;
+      if (url.hash) return;
+      if (url.pathname === window.location.pathname) return;
+      var path = url.pathname.replace(/\/+$/, "");
+      if (!path || path === "/index.html" || path.endsWith("/index.html")) return;
+      try { window.sessionStorage.setItem(SCROLL_KEY, "1"); } catch (err) { /* ignore */ }
+    }, true);
+  }
+
+  function scrollBelowBanner() {
+    var requested = false;
+    try {
+      requested = window.sessionStorage.getItem(SCROLL_KEY) === "1";
+      window.sessionStorage.removeItem(SCROLL_KEY);
+    } catch (err) { return; }
+    if (!requested || window.location.hash) return;
+
+    var target = doc.querySelector(".page-intro") || doc.querySelector(".page-body");
+    if (!target) return;
+    var header = doc.querySelector(".site-header");
+    var offset = (header ? header.getBoundingClientRect().height : 0) + 12;
+    var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    var html = doc.documentElement;
+    var previous = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+    window.scrollTo(0, top);
+    html.style.scrollBehavior = previous;
+  }
+
+  function scheduleScrollBelowBanner() {
+    function run() { window.setTimeout(scrollBelowBanner, 80); }
+    window.addEventListener("pageshow", run);
+    if (doc.readyState === "complete") run();
+  }
+  function initNav() {
+    var here = window.location.pathname.split("/").pop() || "index.html";
+    var map = {
+      "committees.html": "aboutMenu", "meeting-information.html": "aboutMenu",
+      "travel-visa.html": "aboutMenu", "accommodation.html": "aboutMenu",
+      "accessibility.html": "aboutMenu",
+      "contact-us.html": "helpMenu",
+      "programme.html": "programmeMenu",
+      "faculty.html": "programmeMenu", "e-posters.html": "programmeMenu",
+      "cpd.html": "programmeMenu", "ondemand.html": "programmeMenu",
+      "academic-accreditation.html": "programmeMenu", "formal-project-prize.html": "programmeMenu",
+      "call-for-eposter.html": "participateMenu", "call-for-formal-project.html": "participateMenu",
+      "call-for-abstracts.html": "participateMenu",
+      "registration.html": "participateMenu", "terms.html": "helpMenu",
+      "social-functions.html": "engageMenu", "explore-hong-kong.html": "engageMenu",
+      "news.html": "engageMenu", "college-ceremony.html": "engageMenu",
+      "our-sponsors.html": "sponsorshipMenu", "sponsorship-exhibition.html": "sponsorshipMenu",
+      "sponsor-application.html": "sponsorshipMenu",
+      "faqs.html": "helpMenu", "search.html": "helpMenu", "privacy.html": "helpMenu",
+      "past-asm.html": "helpMenu"
+    };
+    var target = map[here];
+    if (target) {
+      var btn = doc.querySelector('.nav-drop-toggle[aria-controls="' + target + '"]');
+      if (btn) btn.classList.add("is-active");
+    }
+    qsa(".site-nav a[href]").forEach(function (a) {
+      var href = a.getAttribute("href") || "";
+      if (href.split("#")[0] === here) {
+        a.classList.add("is-active");
+        a.setAttribute("aria-current", "page");
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------ boot */
+  function boot() {
+    initAnalytics();
+    var page = doc.body.getAttribute("data-page");
+    if (page === "home") renderHomeNews();
+    if (page === "accommodation") renderHotels();
+    if (page === "social") renderSocial();
+    if (page === "news") renderNews();
+    if (page === "faqs") initFaqFilter();
+    if (page === "cpd") renderCpd();
+    if (page === "ceremony") { renderCeremony(); renderCeremonySchedule(); }
+    if (page === "search") renderSearch();
+    if (page === "sponsorship") { renderPackageCompare(); }
+    initInternalNavScroll();
+    scheduleScrollBelowBanner();
+    initNav();
+  }
+
+  if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+
+/* ------------------------------------------------------------------ demo gate
+   Simple client-side password gate for the demo build.
+   Password: asm2027   (session-based; no server required) */
+(function () {
+  "use strict";
+
+  var PASSWORD = "asm2027";
+  var STORE_KEY = "asm2027-demo-access";
+  var grant = {
+    read: function () {
+      try { return window.sessionStorage.getItem(STORE_KEY) === "granted"; } catch (e) { return false; }
+    },
+    save: function () {
+      try { window.sessionStorage.setItem(STORE_KEY, "granted"); } catch (e) {}
+    }
+  };
+
+  if (grant.read()) return;
+
+  var css = [
+    '.asm-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;',
+    'font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#12304f;',
+    'background:linear-gradient(160deg,#12304f 0%,#31568a 55%,#446da8 100%);}',
+    'html.asm-gate-locked,html.asm-gate-locked body{overflow:hidden!important;}',
+    '.asm-gate__card{width:100%;max-width:400px;margin:0;background:#fff;border-radius:16px;padding:36px 32px 30px;',
+    'box-shadow:0 24px 70px rgba(8,24,44,.45);text-align:center;}',
+    '.asm-gate__title{margin:0 0 6px;font-family:Poppins,system-ui,sans-serif;font-size:1.5rem;font-weight:700;letter-spacing:.02em;color:#12304f;}',
+    '.asm-gate__sub{margin:0 0 26px;font-size:.9rem;line-height:1.5;color:#5b7089;}',
+    '.asm-gate__label{display:block;margin-bottom:8px;text-align:left;font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#5b7089;}',
+    '.asm-gate__input{width:100%;box-sizing:border-box;padding:13px 15px;font-family:inherit;font-size:1rem;color:#12304f;',
+    'background:#fff;border:1.5px solid #cfdae8;border-radius:10px;outline:none;transition:border-color .15s,box-shadow .15s;}',
+    '.asm-gate__input:focus{border-color:#446da8;box-shadow:0 0 0 4px rgba(68,109,168,.16);}',
+    '.asm-gate__btn{width:100%;margin-top:16px;padding:13px 16px;font-family:inherit;font-size:1rem;font-weight:600;color:#fff;',
+    'background:#446da8;border:0;border-radius:10px;cursor:pointer;transition:background .15s;}',
+    '.asm-gate__btn:hover{background:#35588a;}',
+    '.asm-gate__error{min-height:20px;margin:12px 0 0;font-size:.85rem;color:#b3261e;}',
+    '.asm-gate__card.is-shaking{animation:asm-gate-shake .35s ease;}',
+    '@keyframes asm-gate-shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}',
+    '.asm-gate.is-leaving{opacity:0;transition:opacity .25s ease;pointer-events:none;}',
+    '@media (prefers-reduced-motion:reduce){.asm-gate.is-leaving{transition:none;}.asm-gate__card.is-shaking{animation:none;}}'
+  ].join("");
+
+  var style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  var overlay = document.createElement("div");
+  overlay.className = "asm-gate";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-labelledby", "asmGateTitle");
+  overlay.innerHTML =
+    '<form class="asm-gate__card" novalidate>' +
+      '<h1 class="asm-gate__title" id="asmGateTitle">ASM 2027</h1>' +
+      '<p class="asm-gate__sub">This site is password-protected for demo.</p>' +
+      '<label class="asm-gate__label" for="asmGatePassword">Login password</label>' +
+      '<input class="asm-gate__input" id="asmGatePassword" name="password" type="password" required ' +
+        'autocomplete="current-password" placeholder="Enter password" spellcheck="false">' +
+      '<button class="asm-gate__btn" type="submit">Enter site</button>' +
+      '<p class="asm-gate__error" role="alert" aria-live="polite"></p>' +
+    "</form>";
+
+  function mount() {
+    document.documentElement.classList.add("asm-gate-locked");
+    document.body.appendChild(overlay);
+
+    var card = overlay.querySelector(".asm-gate__card");
+    var input = overlay.querySelector(".asm-gate__input");
+    var error = overlay.querySelector(".asm-gate__error");
+
+    function unlock() {
+      grant.save();
+      document.documentElement.classList.remove("asm-gate-locked");
+      overlay.classList.add("is-leaving");
+      window.setTimeout(function () { overlay.remove(); }, 260);
+    }
+
+    function reject() {
+      error.textContent = "Incorrect password. Please try again.";
+      card.classList.add("is-shaking");
+      input.value = "";
+      input.focus();
+      window.setTimeout(function () { card.classList.remove("is-shaking"); }, 400);
+    }
+
+    card.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (input.value.trim() === PASSWORD) unlock();
+      else reject();
+    });
+
+    input.addEventListener("input", function () { error.textContent = ""; });
+
+    overlay.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Tab") return;
+      var focusables = overlay.querySelectorAll("input, button");
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+      else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+    });
+
+    window.setTimeout(function () { try { input.focus(); } catch (e) {} }, 40);
+  }
+
+  if (document.body) mount();
+  else document.addEventListener("DOMContentLoaded", mount);
+})();
+
+/* ---------------------------------------------------------- page availability
+   Reads window.ASM_DATA_PAGES (assets/js/data/pages.js). A page set to false
+   keeps its header, navigation and footer but shows a short notice instead of
+   its content. Edit that data file to turn pages on or off. */
+(function () {
+  "use strict";
+
+  var cfg = window.ASM_DATA_PAGES;
+  if (!cfg || !cfg.pages) return;
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  var tag = document.querySelector('script[src*="data/pages.js"]');
+  var root = tag && tag.src ? tag.src.replace(/assets\/js\/data\/pages\.js(\?.*)?$/, "") : "";
+  var href = window.location.href.split("#")[0].split("?")[0];
+  var key = root && href.indexOf(root) === 0 ? href.slice(root.length) : href.replace(/^.*\//, "");
+  try { key = decodeURIComponent(key); } catch (e) {}
+  if (!key || key.charAt(key.length - 1) === "/") key += "index.html";
+
+  var active = Object.prototype.hasOwnProperty.call(cfg.pages, key)
+    ? cfg.pages[key]
+    : cfg.defaultActive !== false;
+  if (active) return;
+
+  var main = document.getElementById("main") || document.querySelector("main");
+  if (!main) return;
+
+  var notice = cfg.notice || {};
+  var title = notice.title || "Details will be announced later";
+  var text = notice.text || "";
+  var home = root ? root + "index.html" : "index.html";
+
+  var style = document.createElement("style");
+  style.textContent = ".page-unavailable__hidden{display:none !important;}";
+  document.head.appendChild(style);
+
+  var noticeEl = document.createElement("div");
+  noticeEl.className = "page-unavailable__notice";
+  noticeEl.innerHTML = '<section class="page-body"><div class="container">' +
+    '<div class="empty-state" style="padding:72px 0">' +
+    "<strong>" + esc(title) + "</strong>" +
+    (text ? "<p>" + esc(text) + "</p>" : "") +
+    '<a class="btn btn-primary" href="' + esc(home) + '">Back to home</a>' +
+    "</div></div></section>";
+
+  // Keep the banner, key-deadline bar and page intro (the page "header"),
+  // then replace everything below them with the notice.
+  var lastHeader = null;
+  var child = main.firstElementChild;
+  while (child) {
+    if (child.classList.contains("banner") ||
+        child.classList.contains("counterbar") ||
+        child.classList.contains("page-intro")) {
+      lastHeader = child;
+    }
+    child = child.nextElementSibling;
+  }
+
+  var firstContent = lastHeader ? lastHeader.nextElementSibling : main.firstElementChild;
+  main.insertBefore(noticeEl, firstContent);
+
+  var node = firstContent;
+  while (node) {
+    var next = node.nextElementSibling;
+    if (node !== noticeEl) node.classList.add("page-unavailable__hidden");
+    node = next;
+  }
+
+  document.documentElement.setAttribute("data-page-inactive", key);
+})();
