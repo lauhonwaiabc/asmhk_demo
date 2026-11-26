@@ -556,13 +556,30 @@
   var tag = document.querySelector('script[src*="data/pages.js"]');
   var root = tag && tag.src ? tag.src.replace(/assets\/js\/data\/pages\.js(\?.*)?$/, "") : "";
   var href = window.location.href.split("#")[0].split("?")[0];
-  var key = root && href.indexOf(root) === 0 ? href.slice(root.length) : href.replace(/^.*\//, "");
+  var key = root && href.indexOf(root) === 0
+    ? href.slice(root.length)
+    : window.location.pathname.replace(/^\/+/, "");
   try { key = decodeURIComponent(key); } catch (e) {}
-  if (!key || key.charAt(key.length - 1) === "/") key += "index.html";
 
-  var active = Object.prototype.hasOwnProperty.call(cfg.pages, key)
-    ? cfg.pages[key]
-    : cfg.defaultActive !== false;
+  // Hosts such as Netlify serve pages without ".html" and may add a trailing
+  // slash, so compare a normalised form of both the URL and the config keys.
+  function normalize(p) {
+    return String(p || "")
+      .toLowerCase()
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "")
+      .replace(/\.html$/, "");
+  }
+
+  var wanted = normalize(key) || "index";
+  var active = cfg.defaultActive !== false;
+  for (var pageKey in cfg.pages) {
+    if (!Object.prototype.hasOwnProperty.call(cfg.pages, pageKey)) continue;
+    if (normalize(pageKey) === wanted) {
+      active = cfg.pages[pageKey];
+      break;
+    }
+  }
   if (active) return;
 
   var main = document.getElementById("main") || document.querySelector("main");
@@ -609,5 +626,5 @@
     node = next;
   }
 
-  document.documentElement.setAttribute("data-page-inactive", key);
+  document.documentElement.setAttribute("data-page-inactive", key || "index");
 })();
