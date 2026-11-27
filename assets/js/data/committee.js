@@ -92,7 +92,7 @@ window.ASM_DATA_COMMITTEE = {
     "subcommittees": [
       {
         "name": "Nursing Symposium Sub-Committee",
-        "members": "Ms. YIP P. L. Renee\nMr. KAM C. W."
+        "members": "Ms. YIP P. L. Renee\nMr. KAM C.W. Eric"
       }
     ]
   }

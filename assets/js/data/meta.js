@@ -161,7 +161,7 @@ window.ASM_DATA_META = {
   m.venue.preConference.label = label(pre);
   m.venue.preConference.long = long(pre);
   m.venue.short = m.venue.name + ", " + m.event.city;
-  m.venue.bannerShort = "19 & 20/F, " + m.venue.name + ", " + m.event.city;
+  m.venue.bannerShort = "19&20/F, " + m.venue.name;
   m.event.bannerDateNote = "(Preconference: " + m.venue.preConference.label + ")";
   m.venue.address = m.venue.building + ", " + m.venue.street;
 
